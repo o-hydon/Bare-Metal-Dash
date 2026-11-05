@@ -1,19 +1,29 @@
-#include <circle/startup.h>     // for EXIT_HALT
-#include <circle/actled.h>
-#include <circle/timer.h>
+
+#include "kernel.h"
+#include <circle/startup.h>
 
 int main (void)
 {
-        CActLED ActLED;
+	// cannot return here because some destructors used in CKernel are not implemented
 
-        for (unsigned i = 1; i <= 10; i++)
-        {
-                ActLED.On ();
-                CTimer::SimpleMsDelay (200);
+	CKernel Kernel;
+	if (!Kernel.Initialize ())
+	{
+		halt ();
+		return EXIT_HALT;
+	}
+	
+	TShutdownMode ShutdownMode = Kernel.Run ();
 
-                ActLED.Off ();
-                CTimer::SimpleMsDelay (500);
-        }
+	switch (ShutdownMode)
+	{
+	case ShutdownReboot:
+		reboot ();
+		return EXIT_REBOOT;
 
-        return EXIT_HALT;
+	case ShutdownHalt:
+	default:
+		halt ();
+		return EXIT_HALT;
+	}
 }

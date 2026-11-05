@@ -3,6 +3,7 @@
 #define _graphicshape_h
 
 #include <circle/2dgraphics.h>
+#include <circle/bcmframebuffer.h>
 
 enum
 {
@@ -13,6 +14,7 @@ class CGraphicShape
 public:
 	CGraphicShape (C2DGraphics *p2DGraphics);
 	~CGraphicShape (void);
+
 
 	void Draw (void);
 

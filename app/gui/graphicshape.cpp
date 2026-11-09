@@ -1,10 +1,13 @@
 
 #include "graphicshape.h"
+#include "backgrounddata.h"
+
 
 T2DColor textColor  = COLOR2D(255, 255, 255); 
 
-CGraphicShape::CGraphicShape (C2DGraphics *p2DGraphics)
-:	m_p2DGraphics (p2DGraphics),
+BackgroundShape::BackgroundShape (C2DGraphics *p2DGraphics)
+:	m_pImageData(RealDash_GTV6_rgb),
+    m_p2DGraphics (p2DGraphics),
 	m_nDisplayWidth (p2DGraphics->GetWidth ()),
 	m_nDisplayHeight (p2DGraphics->GetHeight ()),
     m_Image (p2DGraphics)
@@ -12,22 +15,23 @@ CGraphicShape::CGraphicShape (C2DGraphics *p2DGraphics)
     
     if (m_p2DGraphics == 0)
         return;
-
-    static const T2DColor s_Turquoise = COLOR2D(0x00, 0xFF, 0xFF);
+    const unsigned char* pPixel = m_pImageData;
     for (unsigned int y = 0; y < imgHeight; y++)
     {
         for (unsigned int x = 0; x < imgWidth; x++)
         {
-            m_PixelBuffer[(y * imgWidth) + x] = s_Turquoise;
+            T2DColor pixelColor = COLOR2D(*pPixel, *pPixel+1, *pPixel+2);
+            m_PixelBuffer[(y * imgWidth) + x] = pixelColor;
+            pPixel +=3;
         }
     }
     m_Image.Set(imgWidth, imgHeight, m_PixelBuffer);
 }
-CGraphicShape::~CGraphicShape()
+BackgroundShape::~BackgroundShape()
 {
 
 }
-void CGraphicShape::Draw(void)
+void BackgroundShape::Draw(void)
 {
     if (m_p2DGraphics == 0)
         return;

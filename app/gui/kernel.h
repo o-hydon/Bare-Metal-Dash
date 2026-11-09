@@ -19,7 +19,7 @@ enum TShutdownMode
 class CKernel
 {
 private:
-	static const unsigned nShapes = 32;
+	static const unsigned nShapes = 1;
 
 public:
 	CKernel (void);
@@ -35,7 +35,7 @@ private:
 	CKernelOptions		m_Options;
 
 	C2DGraphics		m_2DGraphics;
-	CGraphicShape		*m_pShape[nShapes];
+	BackgroundShape		*m_pShape[nShapes];
 };
 
 #endif

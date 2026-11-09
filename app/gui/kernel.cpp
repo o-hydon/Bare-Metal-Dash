@@ -20,7 +20,7 @@ TShutdownMode CKernel::Run (void)
 {
 	for (unsigned i = 0; i < nShapes; i++)
 	{
-		m_pShape[i] = new CGraphicShape (&m_2DGraphics);
+		m_pShape[i] = new BackgroundShape (&m_2DGraphics);
 	}
 
 	while (1)

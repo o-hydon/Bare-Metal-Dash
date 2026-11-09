@@ -24,7 +24,6 @@ CIRCLEHOME ?= ..
 
 -include $(CIRCLEHOME)/Config.mk
 -include $(CIRCLEHOME)/Config2.mk	# is not overwritten by "configure"
-
 # set this to 1 to build with clang (experimental)
 CLANG	 ?= 0
 

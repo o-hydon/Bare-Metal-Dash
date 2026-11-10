@@ -1,13 +1,10 @@
 
 #include "graphicshape.h"
-#include "backgrounddata.h"
-
 
 T2DColor textColor  = COLOR2D(255, 255, 255); 
 
 BackgroundShape::BackgroundShape (C2DGraphics *p2DGraphics)
-:	m_pImageData(RealDash_GTV6_rgb),
-    m_p2DGraphics (p2DGraphics),
+:   m_p2DGraphics (p2DGraphics),
 	m_nDisplayWidth (p2DGraphics->GetWidth ()),
 	m_nDisplayHeight (p2DGraphics->GetHeight ()),
     m_Image (p2DGraphics)
@@ -15,12 +12,12 @@ BackgroundShape::BackgroundShape (C2DGraphics *p2DGraphics)
     
     if (m_p2DGraphics == 0)
         return;
-    const unsigned char* pPixel = m_pImageData;
+    unsigned hFile = m_pFileSystem->FileOpen("BG.RGB")
     for (unsigned int y = 0; y < imgHeight; y++)
     {
         for (unsigned int x = 0; x < imgWidth; x++)
         {
-            T2DColor pixelColor = COLOR2D(*pPixel, *pPixel+1, *pPixel+2);
+            T2DColor pixelColor = COLOR2D(*pPixel, *(pPixel+1), *(pPixel+2));
             m_PixelBuffer[(y * imgWidth) + x] = pixelColor;
             pPixel +=3;
         }

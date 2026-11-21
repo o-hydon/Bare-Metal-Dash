@@ -1,13 +1,18 @@
-
 #ifndef _kernel_h
 #define _kernel_h
 
 #include <circle/actled.h>
 #include <circle/koptions.h>
+#include <circle/devicenameservice.h>
 #include <circle/2dgraphics.h>
+#include <circle/exceptionhandler.h>
+#include <circle/interrupt.h>
+#include <circle/timer.h>
+#include <circle/sched/scheduler.h>
 #include <circle/types.h>
+#include <SDCard/emmc.h>
+#include <fatfs/ff.h>
 #include "graphicshape.h"
-
 
 enum TShutdownMode
 {
@@ -31,11 +36,19 @@ public:
 
 private:
 	// do not change this order
-	CActLED			m_ActLED;
+	CActLED				m_ActLED;
 	CKernelOptions		m_Options;
+	CDeviceNameService	m_DeviceNameService;
 
-	C2DGraphics		m_2DGraphics;
+	C2DGraphics			m_2DGraphics;
 	BackgroundShape		*m_pShape[nShapes];
+
+	CExceptionHandler	m_ExceptionHandler;		// Installs ARM IRQ vector table
+	CInterruptSystem	m_Interrupt;
+	CTimer				m_Timer;
+	CScheduler			m_Scheduler;
+	CEMMCDevice			m_EMMC;
+	FATFS				m_FileSystem;
 };
 
 #endif

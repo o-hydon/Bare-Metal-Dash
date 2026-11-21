@@ -1,3 +1,27 @@
 {
-    "C_Cpp.default.compilerPath": ""
+    "configurations": [
+        {
+            "name": "Circle",
+            "compilerPath": "/usr/bin/aarch64-none-elf-g++",
+            "intelliSenseMode": "linux-gcc-arm64",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "compilerArgs": [
+                "-fno-exceptions",
+                "-fno-rtti",
+                "-nostdinc++"
+            ],
+            "includePath": [
+                "${workspaceFolder}/**",
+                "~/circle/include",
+                "~/circle/addon/**"
+            ],
+            "defines": [
+                "RASPPI=4",
+                "AARCH=64",
+                "__circle__"
+            ]
+        }
+    ],
+    "version": 4
 }

@@ -1,6 +1,4 @@
 #include "graphicsimage.h"
-#include <circle/string.h>
-#include <circle/util.h>
 
 #define BYTES_PER_PIXEL 3   // 3 bytes per pixel in RGB24
 

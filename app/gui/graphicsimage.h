@@ -6,6 +6,7 @@
 #include <circle/2dgraphics.h>
 #include <fatfs/ff.h>
 #include <circle/util.h>
+#include <circle/string.h>
 
 enum
 {

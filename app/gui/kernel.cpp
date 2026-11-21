@@ -55,7 +55,7 @@ TShutdownMode CKernel::Run (void)
 {
 	for (unsigned i = 0; i < nShapes; i++)
 	{
-		m_pShape[i] = new BackgroundShape (&m_2DGraphics);
+		m_pShape[i] = new CImageFromFile (&m_2DGraphics, "BG", 192*9, 108*9, 0,0);
 	}
 
 	while (1)

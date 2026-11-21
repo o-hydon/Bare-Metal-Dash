@@ -12,7 +12,7 @@
 #include <circle/types.h>
 #include <SDCard/emmc.h>
 #include <fatfs/ff.h>
-#include "graphicshape.h"
+#include "graphicsimage.h"
 
 enum TShutdownMode
 {
@@ -41,7 +41,7 @@ private:
 	CDeviceNameService	m_DeviceNameService;
 
 	C2DGraphics			m_2DGraphics;
-	BackgroundShape		*m_pShape[nShapes];
+	CImageFromFile	*m_pShape[nShapes];
 
 	CExceptionHandler	m_ExceptionHandler;		// Installs ARM IRQ vector table
 	CInterruptSystem	m_Interrupt;

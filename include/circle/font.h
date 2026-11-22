@@ -39,6 +39,10 @@ extern const TFont Font8x12;
 extern const TFont Font8x14;
 extern const TFont Font8x16;
 extern const TFont Font12x22;
+extern const TFont FontOpenSansNumbers20;
+extern const TFont FontOpenSansNumbers40;
+extern const TFont FontOpenSansNumbers160;
+extern const TFont FontOpenSansNumbers320;
 
 #ifndef DEFAULT_FONT
 #define DEFAULT_FONT	Font8x16

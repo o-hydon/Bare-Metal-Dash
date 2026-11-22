@@ -509,20 +509,24 @@ void C2DGraphics::DrawText (unsigned nX, unsigned nY, T2DColor Color, const char
 	}
 
 	CDisplay::TRawColor nColor = m_pDisplay->GetColor (Color);
-
+	
 	for (; *pText != '\0'; pText++, nX += Font.GetCharWidth ())
 	{
 		for (unsigned y = 0; y < Font.GetUnderline (); y++)
 		{
-			CCharGenerator::TPixelLine Line = Font.GetPixelLine (*pText, y);
+			for (unsigned WordPos = 0; WordPos < Font.GetWordsPerLine (); WordPos++){
+				
+				CCharGenerator::TPixelWord Word = Font.GetPixelWord (*pText, y * Font.GetWordsPerLine () + WordPos);
+				
+				for (unsigned x= 0; x < Font.GetWordLength(); x++){
 
-			for (unsigned x = 0; x < Font.GetCharWidth (); x++)
-			{
-				if (Font.GetPixel (x, Line))
-				{
-					SetPixel (nX + x, nY + y, nColor);
+					if (Font.GetPixel (x, Word))
+					{
+						SetPixel (nX + x + WordPos * Font.GetWordLength(), nY + y, nColor);
+					}
 				}
 			}
+			
 		}
 	}
 }

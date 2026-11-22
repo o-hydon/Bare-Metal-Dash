@@ -24,49 +24,44 @@ CCharGenerator::CCharGenerator (const TFont &rFont, TFontFlags Flags)
 	m_nWidthMult (Flags & FontFlagsDoubleWidth ? 2 : 1),
 	m_nHeightMult (Flags & FontFlagsDoubleHeight ? 2 : 1),
 	m_nCharWidth (rFont.width * m_nWidthMult),
-	m_nCharWidthOrig (rFont.width),
-	m_nCharStride ((rFont.width + 7) / 8),
+	m_nCharStride (((rFont.width + 7) / 8)),
 	m_nCharHeight ((rFont.height + rFont.extra_height) * m_nHeightMult),
-	m_nUnderline (rFont.height * m_nHeightMult)
+	m_nUnderline (rFont.height * m_nHeightMult),
+	m_nWordsPerLine (m_nCharStride < 4 ? 1 : (m_nCharStride + 3) / 4),
+	m_nWordLength (m_nCharStride < 4 ? m_nCharStride*8 : 32)
 {
 }
 
-CCharGenerator::TPixelLine CCharGenerator::GetPixelLine (char chAscii, unsigned nPosY) const
+CCharGenerator::TPixelWord CCharGenerator::GetPixelWord (char chAscii, unsigned nWordPos) const
 {
 	unsigned nAscii = (u8) chAscii;
 	if (   nAscii < m_rFont.first_char
 	    || nAscii > m_rFont.last_char
-	    || nPosY >= m_nUnderline)
+	    || nWordPos >= m_nWordsPerLine *  m_nCharHeight)
 	{
 		return FALSE;
 	}
 
 	if (m_nHeightMult == 2)
 	{
-		nPosY >>= 1;
+		nWordPos >>= 1;
 	}
 
 	switch (m_nCharStride)
 	{
 	case 1: {
 		const u8 *pFontData = static_cast<const u8 *> (m_rFont.data);
-		return pFontData[(nAscii - m_rFont.first_char) * m_rFont.height + nPosY];
+		return pFontData[(nAscii - m_rFont.first_char) * m_rFont.height * m_nWordsPerLine + nWordPos];
 		}
 
 	case 2: {
 		const u16 *pFontData = static_cast<const u16 *> (m_rFont.data);
-		return pFontData[(nAscii - m_rFont.first_char) * m_rFont.height + nPosY];
+		return pFontData[(nAscii - m_rFont.first_char) * m_rFont.height * m_nWordsPerLine + nWordPos];
 		}
 
-	case 3: {
-		const u8 *pFontData = static_cast<const u8 *> (m_rFont.data);
-		pFontData += 3 * ((nAscii - m_rFont.first_char) * m_rFont.height + nPosY);
-		return *reinterpret_cast<const u32 *> (pFontData) & 0xFFFFFF;
-		}
-
-	case 4: {
+	default: {
 		const u32 *pFontData = static_cast<const u32 *> (m_rFont.data);
-		return pFontData[(nAscii - m_rFont.first_char) * m_rFont.height + nPosY];
+		return pFontData[(nAscii - m_rFont.first_char) * m_rFont.height * m_nWordsPerLine + nWordPos];
 		}
 	}
 

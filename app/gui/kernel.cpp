@@ -53,22 +53,10 @@ boolean CKernel::Initialize (void)
 }
 TShutdownMode CKernel::Run (void)
 {
-	for (unsigned i = 0; i < nShapes; i++)
-	{
-		m_pShape[i] = new CImageFromFile (&m_2DGraphics, "BG", 192*9, 108*9, 0,0);
-	}
+	CRealDashGTV6Objects Objects = CRealDashGTV6Objects(&m_2DGraphics);
 
-	while (1)
-	{
-		m_2DGraphics.ClearScreen(CDisplay::Black);
-		
-		for(unsigned i=0; i<nShapes; i++)
-		{
-			m_pShape[i]->Draw();
-		}
-		
-		m_2DGraphics.UpdateDisplay();
-	}
+	while (1);
+
 
 	return ShutdownHalt;
 }

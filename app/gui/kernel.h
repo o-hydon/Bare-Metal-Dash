@@ -12,7 +12,7 @@
 #include <circle/types.h>
 #include <SDCard/emmc.h>
 #include <fatfs/ff.h>
-#include "graphicsimage.h"
+#include "realdashGTV6.h"
 
 enum TShutdownMode
 {

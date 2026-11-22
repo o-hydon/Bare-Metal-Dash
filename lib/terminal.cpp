@@ -1006,11 +1006,11 @@ void CTerminalDevice::DisplayChar (char chChar, unsigned nPosX, unsigned nPosY,
 {
 	for (unsigned y = 0; y < m_CharGen.GetCharHeight (); y++)
 	{
-		CCharGenerator::TPixelLine Line = m_CharGen.GetPixelLine (chChar, y);
+		CCharGenerator::TPixelWord Word = m_CharGen.GetPixelWord (chChar, y); //One word per line
 
 		for (unsigned x = 0; x < m_CharGen.GetCharWidth (); x++)
 		{
-			SetRawPixel (nPosX + x, nPosY + y,   m_CharGen.GetPixel (x, Line)
+			SetRawPixel (nPosX + x, nPosY + y,   m_CharGen.GetPixel (x, Word)
 							   ? nColor : GetTextBackgroundColor ());
 		}
 	}

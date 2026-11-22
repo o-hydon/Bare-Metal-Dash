@@ -1,6 +1,6 @@
 CIRCLEHOME = ../..
 
-OBJS	= main.o kernel.o graphicsimage.o
+OBJS	= main.o kernel.o graphicsimage.o realdashGTV6.o
 
 LIBS	= $(CIRCLEHOME)/addon/SDCard/libsdcard.a \
 	  $(CIRCLEHOME)/addon/fatfs/libfatfs.a \

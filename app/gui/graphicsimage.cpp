@@ -1,9 +1,8 @@
 #include "graphicsimage.h"
 
-#define BYTES_PER_PIXEL 4   //  bytes per pixel in 0RGB
+#define BYTES_PER_PIXEL 4   //  bytes per pixel in 0BGR
 
-T2DColor TextColor = COLOR2D(255, 255, 255);
-T2DColor ErrorColor = COLOR2D(255, 0, 0);
+
 void CImageFromFile::DisplayErrorMessage(const char * Operation, uint8_t ErrorNumber)
 {
     static const char * const s_Errors[] =
@@ -29,11 +28,12 @@ void CImageFromFile::DisplayErrorMessage(const char * Operation, uint8_t ErrorNu
         "Too many open files",                             // 18: FR_TOO_MANY_OPEN_FILES
         "Given parameter is invalid",                      // 19: FR_INVALID_PARAMETER
         "Unknown error"                                    // 20: Should not get here
+        "Position out of bounds",                          // 21: Draw failed
     };
 
     m_p2DGraphics -> DrawRect(0,0,m_p2DGraphics -> GetWidth() ,60, COLOR2D(0,0,0));
     m_p2DGraphics -> DrawText(20, 20, ErrorColor, "[Error]");
-    if ((ErrorNumber > 19) || (ErrorNumber < 1)){ErrorNumber = 20;};
+    if ((ErrorNumber > 21) || (ErrorNumber < 1)){ErrorNumber = 20;};
     CString ErrorMessage;
     ErrorMessage.Format("%s %s", Operation, s_Errors[ErrorNumber]);
     m_p2DGraphics -> DrawText(80, 20, TextColor, (const char*) ErrorMessage);
@@ -43,18 +43,13 @@ void CImageFromFile::DisplayErrorMessage(const char * Operation, uint8_t ErrorNu
 CImageFromFile::CImageFromFile (C2DGraphics *p2DGraphics,
             const char * pFilename,
             const unsigned int nImgWidth,
-            const unsigned int nImgHeight,
-            const unsigned int nX,
-            const unsigned int nY,
-            const char *pJustification)
-:   m_nX (nX),
-    m_nY (nY),
-    m_Justification (pJustification),
-    m_nImgWidth (nImgWidth),
+            const unsigned int nImgHeight)
+:   m_nImgWidth (nImgWidth),
     m_nImgHeight (nImgHeight),
     m_p2DGraphics (p2DGraphics),
     m_pPixelBuffer (nullptr),
-    m_bImageLoaded (false)
+    nDisplayWidth (p2DGraphics -> GetWidth()),
+    nDisplayHeight (p2DGraphics -> GetHeight())
 {
     CString Filepath = CString("SD:/");
     Filepath += pFilename;
@@ -64,7 +59,7 @@ CImageFromFile::CImageFromFile (C2DGraphics *p2DGraphics,
 
     FRESULT OpenResult = f_open(&File, Filepath, FA_READ | FA_OPEN_EXISTING);
 
-    if (OpenResult != FR_OK) {this -> DisplayErrorMessage("File failed to open,", OpenResult);};
+    if (OpenResult != FR_OK) {this -> DisplayErrorMessage("File failed to open:", OpenResult);};
    
     unsigned int nBytesToRead = m_nImgWidth * m_nImgHeight * BYTES_PER_PIXEL;
     unsigned int nBytesRead;
@@ -72,17 +67,11 @@ CImageFromFile::CImageFromFile (C2DGraphics *p2DGraphics,
     
     m_pPixelBuffer = new T2DColor[nImageSize]; //T2DColor uses 0RGB
     FRESULT ReadResult = f_read(&File, m_pPixelBuffer, nBytesToRead, &nBytesRead);
-    
 
-    if (nBytesToRead == nBytesRead)
-    {
-        m_bImageLoaded = true;
-    }
-
-    if ((ReadResult != FR_OK) || !m_bImageLoaded) {this -> DisplayErrorMessage("Failed to read file,", ReadResult);};
+    if (ReadResult != FR_OK) {this -> DisplayErrorMessage("Failed to read file:", ReadResult);};
 
     FRESULT CloseResult = f_close(&File);
-    if (CloseResult != FR_OK) {this -> DisplayErrorMessage("Failed to read close,", CloseResult);};
+    if (CloseResult != FR_OK) {this -> DisplayErrorMessage("Failed to read close:", CloseResult);};
     
        
    
@@ -91,32 +80,16 @@ CImageFromFile::~CImageFromFile(void)
 {
     delete[] m_pPixelBuffer;
 }
-void CImageFromFile::Draw(void)
+void CImageFromFile::Draw(unsigned int nX, unsigned int nY, u8 pXJustification, u8 pYJustification)
 {
-    CString DebugLine1;
-    DebugLine1.Format("Display: %u x %u | BPP: %u | Buffer: %s",
-                        m_nImgWidth, m_nImgHeight, BYTES_PER_PIXEL,
-                        m_pPixelBuffer != 0 ? "OK" : "NULL");
+    unsigned int nXJustified = nX - 0.5 * pXJustification * m_nImgWidth;
+    unsigned int nYJustified = nY - 0.5 * pYJustification * m_nImgHeight;    
 
-        CString DebugLine2;
-        DebugLine2.Format("X: %u | Y: %u, Width: %u | Height: %u",
-                          m_nX, m_nY, m_nImgWidth, m_nImgHeight);
-    
 
-        CString DebugLine3;
-        DebugLine3.Format("sizeof(T2DColor): %u | COLOR2D(00,00,00): 0x%08X, Actual: 0x%08X",
-                          (unsigned)sizeof(T2DColor(0xFF0000FF)), (unsigned)T2DColor(0xFF0000FF), (unsigned)m_pPixelBuffer[0]);
+    if (((nXJustified + m_nImgWidth) > nDisplayWidth)
+      ||((nYJustified + m_nImgHeight) > nDisplayHeight)
+      ||( nXJustified < 0 )
+      ||( nYJustified < 0 )) {DisplayErrorMessage("Image cannot be displayed:", 21);};
 
-    m_p2DGraphics->DrawRect(300, 10, 950, 100, T2DColor(0xFFFF0000));
-    m_p2DGraphics->DrawRect(300, 110, 950, 100, T2DColor(0xFF00FF00));
-    m_p2DGraphics->DrawRect(300, 210, 950, 100, T2DColor(0xFF0000FF));
-
-    m_p2DGraphics->DrawText(300, 20, TextColor, (const char *)DebugLine1);
-    m_p2DGraphics->DrawText(300, 45, TextColor, (const char *)DebugLine2);
-    m_p2DGraphics->DrawText(300, 70, TextColor, (const char *)DebugLine3);
-    m_p2DGraphics->DrawImage(m_nX, m_nY, m_nImgWidth, m_nImgHeight, m_pPixelBuffer);
-
-    m_p2DGraphics->UpdateDisplay();  
-
-    while(1);
+    m_p2DGraphics->DrawImage(nXJustified, nYJustified, m_nImgWidth, m_nImgHeight, m_pPixelBuffer);
 }

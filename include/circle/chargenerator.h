@@ -35,7 +35,7 @@ public:
 		FontFlagsDoubleBoth	= FontFlagsDoubleWidth | FontFlagsDoubleHeight
 	};
 
-	typedef u32 TPixelLine;
+	typedef u32 TPixelWord;
 
 public:
 	/// \param rFont Font to be used
@@ -54,23 +54,26 @@ public:
 	unsigned GetCharHeight (void) const	{ return m_nCharHeight; }
 	/// \return Vertical pixel start position of underline space
 	unsigned GetUnderline (void) const	{ return m_nUnderline; }
-
+	/// \return Horizontal number of pixel per word
+	unsigned GetWordLength (void) const	{ return m_nWordLength; }
+		 
+	unsigned GetWordsPerLine (void) const { return m_nWordsPerLine; }
 	/// \param chAscii Character code (normally Latin1)
-	/// \param nPosY Number of pixel line inside the character (0-based)
+	/// \param nWordPos Word index (0-based)
 	/// \return Horizontal pixel information for the line
-	TPixelLine GetPixelLine (char chAscii, unsigned nPosY) const;
+	TPixelWord GetPixelWord (char chAscii, unsigned nWordPos) const;
 
 	/// \param nPosX Horizontal pixel position inside the line (Left is 0)
-	/// \param Line Horizontal pixel information for the line
+	/// \param Word Horizontal pixel information for the line
 	/// \return Is pixel is set?
-	boolean GetPixel (unsigned nPosX, TPixelLine Line) const
+	boolean GetPixel (unsigned nPosX, TPixelWord Word) const
 	{
 		if (m_nWidthMult == 2)
 		{
 			nPosX >>= 1;
 		}
 
-		return !!(Line & (1 << (m_nCharWidthOrig-1 - nPosX)));
+		return !!(Word & (1 << (m_nWordLength-1 - nPosX)));
 	}
 
 	/// \param chAscii Character code (normally Latin1)
@@ -79,7 +82,7 @@ public:
 	/// \return Is pixel is set?
 	boolean GetPixel (char chAscii, unsigned nPosX, unsigned nPosY) const
 	{
-		return GetPixel (nPosX, GetPixelLine (chAscii, nPosY));
+		return GetPixel (nPosX, GetPixelWord (chAscii, nPosY));
 	}
 
 private:
@@ -88,10 +91,11 @@ private:
 	unsigned m_nHeightMult;
 
 	unsigned m_nCharWidth;
-	unsigned m_nCharWidthOrig;
 	unsigned m_nCharStride;
 	unsigned m_nCharHeight;
 	unsigned m_nUnderline;
+	unsigned m_nWordsPerLine;
+	unsigned m_nWordLength;
 };
 
 #endif

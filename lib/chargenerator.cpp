@@ -28,7 +28,7 @@ CCharGenerator::CCharGenerator (const TFont &rFont, TFontFlags Flags)
 	m_nCharHeight ((rFont.height + rFont.extra_height) * m_nHeightMult),
 	m_nUnderline (rFont.height * m_nHeightMult),
 	m_nWordsPerLine (m_nCharStride < 4 ? 1 : (m_nCharStride + 3) / 4),
-	m_nWordLength (m_nCharStride < 4 ? m_nCharStride*8 : 32)
+	m_nWordLength (m_nCharStride < 3 ? m_nCharStride*8 : 32)
 {
 }
 

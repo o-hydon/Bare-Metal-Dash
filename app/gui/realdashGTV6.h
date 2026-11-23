@@ -17,8 +17,8 @@ private:
     void AddDataObjects(void);
 
     static const T2DColor TextColor = COLOR2D(255, 255, 255);
-    static const T2DColor SubTextColor = COLOR2D(230, 230, 230);
+    static const T2DColor SubTextColor = COLOR2D(190, 190, 190);
     static const T2DColor SubSubTextColor = COLOR2D(100, 100, 100);
-
+    void AddBarLevel(unsigned nLevel, unsigned nMax,unsigned nX, unsigned nY);
 };
 #endif

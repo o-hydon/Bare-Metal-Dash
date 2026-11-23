@@ -517,11 +517,15 @@ void C2DGraphics::DrawText (unsigned nX, unsigned nY, T2DColor Color, const char
 			for (unsigned WordPos = 0; WordPos < Font.GetWordsPerLine (); WordPos++){
 				
 				CCharGenerator::TPixelWord Word = Font.GetPixelWord (*pText, y * Font.GetWordsPerLine () + WordPos);
-				
-				for (unsigned x= 0; x < Font.GetWordLength(); x++){
+				unsigned StartInWordPos = 0;
+				if ((WordPos == Font.GetWordsPerLine () -1) & ((Font.GetCharWidth () % Font.GetWordLength()) != 0))
+				{
+					StartInWordPos =  Font.GetWordLength() - (Font.GetCharWidth () % Font.GetWordLength());
+				}
+				for (unsigned x= 0; x < Font.GetWordLength() - StartInWordPos; x++){
 
-					if (Font.GetPixel (x, Word))
-					{
+					if (Font.GetPixel (StartInWordPos + x, Word))
+					{ 
 						SetPixel (nX + x + WordPos * Font.GetWordLength(), nY + y, nColor);
 					}
 				}
